@@ -23,6 +23,13 @@ ELEMENT=$($PSQL "SELECT e.atomic_number, e.name, e.symbol, t.type, p.atomic_mass
    INNER JOIN types t USING(type_id)
     WHERE e.atomic_number = $1")
 
+#handle element not found
+if [[ -z $ELEMENT ]]
+then
+  echo "I could not find that element in the database."
+  exit
+fi
+
 IFS='|' read ATOMIC_NUMBER NAME SYMBOL TYPE MASS MELTING BOILING <<< "$ELEMENT"
 
 echo "The element with atomic number $ATOMIC_NUMBER is $NAME ($SYMBOL). It's a $TYPE, with a mass of $MASS amu. $NAME has a melting point of $MELTING celsius and a boiling of $BOILING celsius."
